@@ -17,20 +17,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const SPREADSHEET_ID = '2PACX-1vS-E6XqaS3hZ9FqMUtZgWKs6UvkNiKc8ytlUyHh6FJZed7Lo7Z3T4R2mfEPA8-TcqpF6u7mLfou4BLU';
     const PUBHTML_URL = `https://docs.google.com/spreadsheets/d/e/${SPREADSHEET_ID}/pubhtml`;
 
-    // Helper: CORS proxy
-    const getProxyUrl = (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+    // Helper: CORS proxy list (tried in order, cycling per attempt)
+    const PROXIES = [
+        (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+        (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+        (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+    ];
+    const getProxyUrl = (url, proxyIndex = 0) => PROXIES[proxyIndex % PROXIES.length](url);
 
-    // Helper: retry fetch up to `maxRetries` times with increasing delay
-    const fetchWithRetry = async (url, maxRetries = 3, delayMs = 1500) => {
-        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    // Helper: retry fetch cycling through proxies on each failure
+    const fetchWithRetry = async (url, maxRetries = 6, delayMs = 1000) => {
+        for (let attempt = 0; attempt < maxRetries; attempt++) {
+            const proxyUrl = getProxyUrl(url, attempt);
             try {
-                const response = await fetch(url);
+                const response = await fetch(proxyUrl, { cache: 'no-store' });
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 return response;
             } catch (err) {
-                if (attempt === maxRetries) throw err;
-                console.warn(`Fetch attempt ${attempt} failed, retrying in ${delayMs * attempt}ms…`);
-                await new Promise(res => setTimeout(res, delayMs * attempt));
+                if (attempt === maxRetries - 1) throw err;
+                const proxyName = ['allorigins', 'corsproxy.io', 'codetabs'][attempt % PROXIES.length];
+                console.warn(`Fetch attempt ${attempt + 1} via ${proxyName} failed, trying next…`);
+                await new Promise(res => setTimeout(res, delayMs));
             }
         }
     };
@@ -134,12 +141,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 setLoading(true, 'Fetching certificate data…');
                 const csvUrl = `https://docs.google.com/spreadsheets/d/e/${SPREADSHEET_ID}/pub?gid=${targetGid}&single=true&output=csv`;
 
-                // Retry CSV fetch up to 3 times
+                // Retry CSV fetch cycling through all proxy fallbacks (6 attempts)
                 let lastError;
-                for (let attempt = 1; attempt <= 3; attempt++) {
+                const MAX_CSV_ATTEMPTS = 6;
+                for (let attempt = 0; attempt < MAX_CSV_ATTEMPTS; attempt++) {
+                    const proxiedCsvUrl = getProxyUrl(csvUrl, attempt);
                     try {
                         cachedDataByYear[selectedYear] = await new Promise((resolve, reject) => {
-                            Papa.parse(getProxyUrl(csvUrl), {
+                            Papa.parse(proxiedCsvUrl, {
                                 download: true,
                                 header: true,
                                 skipEmptyLines: true,
@@ -150,9 +159,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         break; // success
                     } catch (err) {
                         lastError = err;
-                        if (attempt < 3) {
-                            console.warn(`CSV fetch attempt ${attempt} failed, retrying…`);
-                            await new Promise(res => setTimeout(res, 1500 * attempt));
+                        if (attempt < MAX_CSV_ATTEMPTS - 1) {
+                            const proxyName = ['allorigins', 'corsproxy.io', 'codetabs'][attempt % PROXIES.length];
+                            console.warn(`CSV attempt ${attempt + 1} via ${proxyName} failed, trying next…`);
+                            await new Promise(res => setTimeout(res, 1000));
                         }
                     }
                 }
