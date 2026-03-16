@@ -253,6 +253,61 @@ body {
     color: white;
 }
 
+/* ── Year filter row (new dropdown) ── */
+.year-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+}
+
+.year-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.year-select {
+    flex: 1;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    font-family: inherit;
+    padding: 0.65rem 2.5rem 0.65rem 1rem;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    background-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    max-width: 180px;
+}
+
+.year-select:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+}
+
+.year-select option {
+    background: var(--bg-dark);
+    color: var(--text-main);
+}
+
+.year-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .primary-btn {
     background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
     color: white;
@@ -385,6 +440,20 @@ body {
 .cert-number-display span {
     color: white;
     font-weight: 700;
+}
+
+.year-badge {
+    display: inline-block;
+    margin-left: 0.6rem;
+    background: rgba(56, 189, 248, 0.15);
+    color: var(--accent-blue);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.15rem 0.6rem;
+    vertical-align: middle;
+    letter-spacing: 0.04em;
 }
 
 .cert-body {
@@ -572,6 +641,17 @@ body {
         font-size: 1.25rem;
     }
 
+    .year-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .year-select {
+        max-width: 100%;
+        width: 100%;
+    }
+
     /* Stack input row vertically on mobile */
     .input-row {
         flex-direction: column;
@@ -663,5 +743,318 @@ body {
     .footer {
         font-size: 0.72rem;
         padding: 0.5rem 0.75rem;
+    }
+}
+
+/* =============================================
+   PRINT BUTTON (screen only)
+   ============================================= */
+.print-btn-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.25rem;
+}
+
+.print-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: linear-gradient(135deg, #1e40af, #1d4ed8);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 0.8rem 1.8rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(29, 78, 216, 0.35);
+}
+
+.print-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(29, 78, 216, 0.45);
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+}
+
+.print-btn:active {
+    transform: translateY(0);
+}
+
+/* =============================================
+   PRINT DOCUMENT (hidden on screen)
+   ============================================= */
+.print-document {
+    display: none;
+    /* shown only via @media print */
+}
+
+/* =============================================
+   @MEDIA PRINT  – A4 clean PDF output
+   ============================================= */
+@media print {
+
+    /* Hide everything on screen */
+    .background-container,
+    .header,
+    .search-section,
+    .result-section,
+    .footer,
+    .glow-orb {
+        display: none !important;
+    }
+
+    /* Reset body / page */
+    body {
+        background: #fff !important;
+        color: #111 !important;
+        min-height: unset;
+        display: block;
+    }
+
+    .app-container {
+        display: block;
+        max-width: 100%;
+        padding: 0;
+    }
+
+    /* Show the print document */
+    .print-document {
+        display: block !important;
+        background: #fff;
+        color: #111;
+        font-family: 'Georgia', 'Times New Roman', serif;
+        font-size: 11pt;
+        line-height: 1.6;
+        padding: 30mm 25mm 25mm 25mm;
+        width: 100%;
+        box-sizing: border-box;
+        page-break-inside: avoid;
+    }
+
+    /* Letterhead */
+    .print-letterhead {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-bottom: 2.5px solid #1a3c6e;
+        padding-bottom: 10pt;
+        margin-bottom: 14pt;
+    }
+
+    .print-logo-area {
+        display: flex;
+        align-items: center;
+        gap: 10pt;
+    }
+
+    .print-shield {
+        flex-shrink: 0;
+    }
+
+    .print-org-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .print-org-name {
+        font-size: 13pt;
+        font-weight: bold;
+        color: #1a3c6e;
+        font-family: 'Georgia', serif;
+        letter-spacing: 0.02em;
+    }
+
+    .print-org-sub {
+        font-size: 9pt;
+        color: #555;
+        margin-top: 2pt;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .print-ref-block {
+        text-align: right;
+        font-size: 8.5pt;
+        color: #444;
+        line-height: 1.8;
+    }
+
+    .print-ref-label {
+        font-weight: bold;
+        color: #1a3c6e;
+    }
+
+    /* Title bar */
+    .print-title-bar {
+        background: #1a3c6e;
+        color: #fff;
+        text-align: center;
+        padding: 7pt 0;
+        margin-bottom: 18pt;
+        border-radius: 2pt;
+    }
+
+    .print-doc-title {
+        font-size: 14pt;
+        font-family: 'Georgia', serif;
+        letter-spacing: 0.12em;
+        margin: 0;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    /* Salutation */
+    .print-salutation {
+        font-size: 10.5pt;
+        margin-bottom: 10pt;
+        font-style: italic;
+        color: #333;
+    }
+
+    /* Body text */
+    .print-body-text {
+        font-size: 10.5pt;
+        margin-bottom: 16pt;
+        color: #222;
+    }
+
+    /* Record details box */
+    .print-details-box {
+        border: 1.2px solid #1a3c6e;
+        border-radius: 3pt;
+        padding: 10pt 14pt;
+        margin-bottom: 16pt;
+        background: #f5f8ff;
+    }
+
+    .print-details-title {
+        font-weight: bold;
+        font-size: 10pt;
+        color: #1a3c6e;
+        margin-bottom: 7pt;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .print-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 10pt;
+    }
+
+    .print-table tr {
+        border-bottom: 0.5px solid #d0d8e8;
+    }
+
+    .print-table tr:last-child {
+        border-bottom: none;
+    }
+
+    .print-td-label {
+        color: #444;
+        font-weight: 600;
+        width: 38%;
+        padding: 4pt 0;
+        vertical-align: top;
+    }
+
+    .print-td-sep {
+        color: #777;
+        width: 4%;
+        padding: 4pt 4pt;
+        vertical-align: top;
+    }
+
+    /* Disclaimer */
+    .print-disclaimer {
+        font-size: 8.5pt;
+        color: #555;
+        background: #f9f9f9;
+        border-left: 3px solid #1a3c6e;
+        padding: 7pt 10pt;
+        margin-top: 18pt;
+        margin-bottom: 18pt;
+        border-radius: 0 3pt 3pt 0;
+    }
+
+    /* Footer line */
+    .print-footer-line {
+        display: flex;
+        justify-content: space-between;
+        font-size: 8pt;
+        color: #777;
+        border-top: 1px solid #ccc;
+        padding-top: 7pt;
+    }
+
+    .print-footer-right {
+        text-align: right;
+        font-style: italic;
+    }
+
+    /* Ensure page margins are respected */
+    @page {
+        size: A4;
+        margin: 15mm;
+    }
+
+    @media print {
+
+        /* ප්‍රධාන පේළි සැකසුම */
+        .print-org-info {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        /* ආයතනයේ නම තනි පේළියකට ගැනීම */
+        .print-org-name {
+            font-size: 15pt;
+            /* අකුරු පේළියට ගැළපෙන සේ ප්‍රමාණය සකසා ඇත */
+            font-weight: bold;
+            color: #1a3c6e;
+            white-space: nowrap;
+            /* අකුරු පේළිය කැඩීම වළක්වයි */
+            margin-bottom: 2pt;
+        }
+
+        /* දෙවන පේළිය - Authority සහ Reference දෙපසට සැකසීම */
+        .print-org-sub-row {
+            display: flex;
+            flex-wrap: wrap;
+            /* අකුරු වැඩි වූ විට ඊළඟ පේළියට යාමට ඉඩ දෙයි */
+            justify-content: space-between;
+            align-items: baseline;
+            width: 100%;
+            margin-top: 2pt;
+        }
+
+        .print-org-sub {
+            font-size: 9pt;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .print-ref-block {
+            font-size: 9pt;
+            color: #444;
+            /* පේළිය කැඩුණු පසු දකුණු පසටම තල්ලු කිරීම සඳහා */
+            margin-left: auto;
+            text-align: right;
+            flex-basis: 100%;
+            /* මෙය භාවිතයෙන් මුළු පේළියම ගෙන Reference කොටස පහළටම දමයි */
+            margin-top: 2pt;
+            /* පේළි දෙක අතර සුළු පරතරයක් සඳහා */
+        }
+
+        /* ලෝගෝවේ උස පාලනය */
+        .print-logo-img {
+            height: 55px;
+            width: auto;
+            margin-right: 12pt;
+        }
     }
 }
