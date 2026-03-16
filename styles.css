@@ -253,6 +253,61 @@ body {
     color: white;
 }
 
+/* ── Year filter row (new dropdown) ── */
+.year-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+}
+
+.year-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.year-select {
+    flex: 1;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    font-family: inherit;
+    padding: 0.65rem 2.5rem 0.65rem 1rem;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    background-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    max-width: 180px;
+}
+
+.year-select:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+}
+
+.year-select option {
+    background: var(--bg-dark);
+    color: var(--text-main);
+}
+
+.year-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .primary-btn {
     background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
     color: white;
@@ -385,6 +440,20 @@ body {
 .cert-number-display span {
     color: white;
     font-weight: 700;
+}
+
+.year-badge {
+    display: inline-block;
+    margin-left: 0.6rem;
+    background: rgba(56, 189, 248, 0.15);
+    color: var(--accent-blue);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.15rem 0.6rem;
+    vertical-align: middle;
+    letter-spacing: 0.04em;
 }
 
 .cert-body {
@@ -570,6 +639,17 @@ body {
 
     .search-section h3 {
         font-size: 1.25rem;
+    }
+
+    .year-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .year-select {
+        max-width: 100%;
+        width: 100%;
     }
 
     /* Stack input row vertically on mobile */
